@@ -1,0 +1,30 @@
+<.flash_group flash={@flash} />
+
+<h1 class="text-2xl">Ping me</h1>
+<p class="text-xs">
+  Inspired by <a class="text-blue-500" href="https://samwho.dev/ping/">samwho.dev/ping</a>
+</p>
+
+<div class="py-5">
+  <a href={~p"/receiver"} class="text-red-500">DEBUG: go to /receiver</a>
+</div>
+
+<form
+  method="POST" action={~p"/ping"}
+  class="flex flex-col"
+>
+  <input type="hidden" name="_csrf_token" value={ get_csrf_token() } >
+  <input
+    type="text"
+    name="message"
+    class="rounded-full text-lg text-slate-700 px-4"
+    maxlength="256"
+    placeholder="Enter your message..."
+  />
+  <div class="my-3 px-4">
+    <button class="w-full py-3 text-green-800 font-semibold bg-green-400 border-2 border-green-400 hover:border-green-500 rounded">
+      Send
+    </button>
+  </div>
+</form>
+
