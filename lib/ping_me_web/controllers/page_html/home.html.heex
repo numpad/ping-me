@@ -10,7 +10,7 @@
 </div>
 
 <form
-  method="POST" action={~p"/ping"}
+  method="POST" action={~p"/"}
   class="flex flex-col"
 >
   <input type="hidden" name="_csrf_token" value={ get_csrf_token() } >
@@ -18,11 +18,19 @@
     type="text"
     name="message"
     class="rounded-full text-lg text-slate-700 px-4"
+    minlength="1"
     maxlength="256"
     placeholder="Enter your message..."
   />
-  <div class="my-3 px-4">
-    <button class="w-full py-3 text-green-800 font-semibold bg-green-400 border-2 border-green-400 hover:border-green-500 rounded">
+
+  <%= if assigns[:message_error] do %>
+    <p class="text-red-500 text-sm">
+      <%= @message_error %>
+    </p>
+  <% end %>
+
+  <div class="my-3 flex justify-center px-4">
+    <button class="px-20 py-3 text-green-800 font-semibold bg-green-400 border-2 border-green-400 hover:border-green-500 rounded">
       Send
     </button>
   </div>

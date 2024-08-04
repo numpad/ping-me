@@ -13,16 +13,23 @@ defmodule PingMeWeb.PageController do
   def ping(conn, params) do
     ip = ip_to_string(conn.remote_ip)
     changeset = PingMessage.changeset(%PingMessage{ip: ip}, params)
-    {:ok, _} = Repo.insert(changeset)
 
-    send_sub = fn sub ->
-      WebPushElixir.send_notification(sub.subscription_data, "#{params["message"]}")
+    if changeset.valid? do
+      {:ok, _} = Repo.insert(changeset)
+
+      send_sub = fn sub ->
+        WebPushElixir.send_notification(sub.subscription_data, "#{params["message"]}")
+      end
+
+      Repo.all(Subscriber)
+        |> Enum.map(send_sub)
+
+      redirect(conn, to: ~p"/")
+    else
+      conn
+      |> assign(:message_error, "Can't be blank")
+      |> render(:home)
     end
-
-    Repo.all(Subscriber)
-      |> Enum.map(send_sub)
-
-    redirect(conn, to: ~p"/")
   end
 
   def subscribe(conn, %{ "subscription" => subscription_data }) do
@@ -54,3 +61,4 @@ defmodule PingMeWeb.PageController do
   end
 
 end
+

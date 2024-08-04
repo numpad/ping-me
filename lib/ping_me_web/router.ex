@@ -18,7 +18,7 @@ defmodule PingMeWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-    post "/ping", PageController, :ping
+    post "/", PageController, :ping
     post "/subscribe", PageController, :subscribe
 
     get "/receiver", PageController, :receiver
