@@ -110,7 +110,7 @@
 
       const subscription = await registration.pushManager.subscribe(subscribeOptions);
 
-      fetch("/subscribe", {
+      const response = await fetch("/api/subscribe", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -120,6 +120,8 @@
           subscription: JSON.stringify(subscription),
         }),
       });
+
+      const response_json = await response.json();
     }
   }
 

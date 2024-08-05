@@ -25,9 +25,11 @@ defmodule PingMeWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", PingMeWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", PingMeWeb do
+    pipe_through :api
+
+    post "/subscribe", ApiController, :subscribe
+  end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:ping_me, :dev_routes) do

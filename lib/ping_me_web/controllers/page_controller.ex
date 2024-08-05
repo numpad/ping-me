@@ -1,8 +1,6 @@
 defmodule PingMeWeb.PageController do
   use PingMeWeb, :controller
 
-  import Ecto.Query
-
   alias PingMe.Repo
   alias PingMe.{PingMessage, Subscriber}
 
@@ -11,7 +9,7 @@ defmodule PingMeWeb.PageController do
   end
 
   def ping(conn, params) do
-    ip = ip_to_string(conn.remote_ip)
+    ip = get_conn_ip(conn)
     changeset = PingMessage.changeset(%PingMessage{ip: ip}, params)
 
     if changeset.valid? do
@@ -21,7 +19,9 @@ defmodule PingMeWeb.PageController do
         WebPushElixir.send_notification(sub.subscription_data, "#{params["message"]}")
       end
 
-      Repo.all(Subscriber)
+      # TODO: sending fails for all(?) if Subscriber.subscription contains garbage...
+      Subscriber
+        |> Repo.all()
         |> Enum.map(send_sub)
 
       redirect(conn, to: ~p"/")
@@ -32,32 +32,31 @@ defmodule PingMeWeb.PageController do
     end
   end
 
-  def subscribe(conn, %{ "subscription" => subscription_data }) do
-    changeset = Subscriber.changeset(%Subscriber{}, %{ subscription_data: subscription_data })
-    {:ok, _} = Repo.insert(changeset)
-
-    WebPushElixir.send_notification(
-      subscription_data,
-      "You are subscribed! This is how you'll receive notifications.")
-
-    redirect(conn, to: ~p"/")
-  end
-
   def receiver(conn, _params) do
-    msgs = Repo.all(
-      from msg in PingMessage,
-        limit: 100,
-        order_by: [desc: msg.inserted_at])
+    msgs = PingMessage.get_latest()
 
     conn
       |> assign(:ping_messages, msgs)
-      |> render(:receiver, layout: false)
+      |> render(:receiver)
   end
 
+  defp get_conn_ip(conn) do
+    forwarded_for =
+      conn
+      |> get_req_header("x-forwarded-for")
 
-  defp ip_to_string(remote_ip) do
-    {a, b, c, d} = remote_ip
-    "#{a}.#{b}.#{c}.#{d}"
+    if length(forwarded_for) > 0 do
+      forwarded_for
+        |> List.first()
+        |> String.split(",")
+        |> List.first()
+        |> String.trim()
+    else
+      conn.remote_ip
+        |> Tuple.to_list()
+        |> List.foldr("", fn a, b -> "#{a}.#{b}" end)
+        |> String.slice(0..-2//1)
+    end
   end
 
 end

@@ -1,6 +1,8 @@
 defmodule PingMe.PingMessage do
   use Ecto.Schema
-  import Ecto.Changeset
+  import Ecto.{Changeset, Query}
+
+  alias PingMe.Repo
 
   schema "ping_messages" do
     field :message, :string
@@ -16,4 +18,12 @@ defmodule PingMe.PingMessage do
     |> validate_required([:message])
     |> validate_length(:message, max: 256)
   end
+
+  def get_latest() do
+    Repo.all(
+      from msg in __MODULE__,
+        limit: 25,
+        order_by: [desc: msg.inserted_at])
+  end
+
 end

@@ -29,10 +29,11 @@ self.addEventListener('push', (event) => {
 			badge: '/images/notification-badge.png',
 			actions: [
 				/* {action: 'reply', title: "Reply", icon: undefined}, */
-				{action: 'mark-spam', title: "Mark spam", icon: undefined},
+				/* {action: 'mark-spam', title: "Mark spam", icon: undefined}, */
 			],
 		}
 	);
+
 	event.waitUntil(promiseChain);
 });
 

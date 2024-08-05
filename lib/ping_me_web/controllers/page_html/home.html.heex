@@ -5,9 +5,11 @@
   Inspired by <a class="text-blue-500" href="https://samwho.dev/ping/">samwho.dev/ping</a>
 </p>
 
-<div class="py-5">
-  <a href={~p"/receiver"} class="text-red-500">DEBUG: go to /receiver</a>
-</div>
+<%= if Mix.env() == :dev do %>
+  <div class="py-5">
+    <a href={~p"/receiver"} class="text-red-500">DEBUG: go to /receiver</a>
+  </div>
+<% end %>
 
 <form
   method="POST" action={~p"/"}
