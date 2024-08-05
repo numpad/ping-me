@@ -23,6 +23,7 @@
     minlength="1"
     maxlength="256"
     placeholder="Enter your message..."
+    autocomplete="off"
   />
 
   <%= if assigns[:message_error] do %>
@@ -32,8 +33,18 @@
   <% end %>
 
   <div class="my-3 flex justify-center px-4">
-    <button class="px-20 py-3 text-green-800 font-semibold bg-green-400 border-2 border-green-400 hover:border-green-500 rounded">
-      Send
+    <button
+      class="px-16 py-3
+      flex gap-x-1
+      text-green-800 font-semibold bg-green-400 border-2 border-green-400
+      hover:border-green-500
+      disabled:bg-green-500/30 disabled:text-green-800/30 disabled:border-green-200/30
+      rounded transition"
+      data-disabled-when-empty="input[name='message']"
+      disabled
+    >
+      <.icon name="hero-chat-bubble-oval-left-ellipsis" />
+      <span class="flex-grow-1">Send</span>
     </button>
   </div>
 </form>

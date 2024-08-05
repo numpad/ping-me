@@ -42,6 +42,16 @@ liveSocket.connect()
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
+// Register some utils
+import PushTools from './push_tools';
+window.PushTools = PushTools;
+
+import installListeners from "./input_utils";
+window.addEventListener('DOMContentLoaded', () => {
+	installListeners();
+});
+
+
 // Register service worker
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', () => {
