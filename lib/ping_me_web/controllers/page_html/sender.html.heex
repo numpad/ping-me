@@ -1,12 +1,12 @@
 <.flash_group flash={@flash} />
 
 <h1 class="text-2xl">Ping me</h1>
-<p class="text-xs">
+<p class="text-xs mb-5">
   Inspired by <a class="text-blue-500" href="https://samwho.dev/ping/">samwho.dev/ping</a>
 </p>
 
 <%= if Mix.env() == :dev do %>
-  <div class="py-5">
+  <div class="mb-5">
     <a href={~p"/receiver"} class="text-red-500">DEBUG: go to /receiver</a>
   </div>
 <% end %>

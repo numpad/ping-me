@@ -4,8 +4,8 @@ defmodule PingMeWeb.PageController do
   alias PingMe.Repo
   alias PingMe.{PingMessage, Subscriber}
 
-  def home(conn, _params) do
-    render(conn, :home)
+  def sender(conn, _params) do
+    render(conn, :sender)
   end
 
   def ping(conn, params) do
@@ -15,20 +15,21 @@ defmodule PingMeWeb.PageController do
     if changeset.valid? do
       {:ok, _} = Repo.insert(changeset)
 
+      # TODO: sending fails for all(?) if Subscriber.subscription contains garbage...
       send_sub = fn sub ->
         WebPushElixir.send_notification(sub.subscription_data, "#{params["message"]}")
       end
 
-      # TODO: sending fails for all(?) if Subscriber.subscription contains garbage...
       Subscriber
         |> Repo.all()
         |> Enum.map(send_sub)
 
-      redirect(conn, to: ~p"/")
+      conn
+        |> redirect(to: ~p"/")
     else
       conn
-      |> assign(:message_error, "Can't be blank")
-      |> render(:home)
+        |> assign(:message_error, "Can't be blank")
+        |> render(:sender)
     end
   end
 
@@ -40,6 +41,11 @@ defmodule PingMeWeb.PageController do
       |> render(:receiver)
   end
 
+
+  @doc """
+    Returns a string representation of the clients remote ip.
+    Respects a potential reverse proxy.
+  """
   defp get_conn_ip(conn) do
     forwarded_for =
       conn
