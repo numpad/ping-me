@@ -12,6 +12,7 @@ defmodule PingMeWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug PingMeWeb.Plugs.RateLimiterPlug
   end
 
   scope "/", PingMeWeb do

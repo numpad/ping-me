@@ -19,6 +19,7 @@ defmodule PingMe.Application do
       {Finch, name: PingMe.Finch},
       # Start a worker by calling: PingMe.Worker.start_link(arg)
       # {PingMe.Worker, arg},
+      {PingMe.RateLimiter, name: PingMe.RateLimiter},
       # Start to serve requests, typically the last entry
       PingMeWeb.Endpoint
     ]
