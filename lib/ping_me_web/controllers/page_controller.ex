@@ -34,10 +34,15 @@ defmodule PingMeWeb.PageController do
     end
   end
 
-  def receiver(conn, _params) do
-    msgs = PingMessage.get_latest()
+  def receiver(conn, params) do
+    from = Map.get(params, "from")
+    msgs = case from do
+      nil -> PingMessage.get_latest()
+      ip -> PingMessage.get_latest_from_ip(ip)
+    end
 
     conn
+      |> assign(:from, from)
       |> assign(:ping_messages, msgs)
       |> render(:receiver)
   end

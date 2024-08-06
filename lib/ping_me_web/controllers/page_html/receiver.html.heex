@@ -36,7 +36,12 @@
             Date
           </th>
           <th class="border-b dark:border-slate-600 font-medium p-4 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">
-            From
+            <span :if={is_nil @from}>
+              From
+            </span>
+            <a href={~p"/receiver"} :if={@from} class="group">
+              From: <b class="group-hover:line-through"><%= @from %></b>
+            </a>
           </th>
           <th class="border-b dark:border-slate-600 font-medium p-4 pr-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">
             Message
@@ -45,14 +50,24 @@
       </thead>
       <tbody class="bg-white dark:bg-slate-800">
         <tr :for={msg <- @ping_messages}>
-          <td class="border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-slate-500 dark:text-slate-400">
-            <%= msg.inserted_at %>
+          <td
+            class="border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-slate-500 dark:text-slate-400"
+            title={msg.inserted_at}
+          >
+            <%= Cldr.DateTime.Relative.to_string(msg.inserted_at) |> elem(1) %>
           </td>
           <td class="border-b border-slate-100 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
-            <%= msg.ip %>
+            <a :if={is_nil @from} href={~p"/receiver?from=#{msg.ip}"} class="hover:underline">
+              <%= msg.ip %>
+            </a>
+            <span :if={@from}>
+              <%= msg.ip %>
+            </span>
           </td>
           <td class="border-b border-slate-100 dark:border-slate-700 p-4 pr-8 text-slate-500 dark:text-slate-400">
-            <%= msg.message %>
+            <p class="break-words">
+              <%= msg.message %>
+            </p>
           </td>
         </tr>
       </tbody>

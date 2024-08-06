@@ -26,4 +26,12 @@ defmodule PingMe.PingMessage do
         order_by: [desc: msg.inserted_at])
   end
 
+  def get_latest_from_ip(ip) do
+    Repo.all(
+      from msg in __MODULE__,
+        limit: 25,
+        where: msg.ip == ^ip,
+        order_by: [desc: msg.inserted_at])
+  end
+
 end
