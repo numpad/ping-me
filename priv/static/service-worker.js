@@ -16,15 +16,18 @@ self.addEventListener('notificationclick', (event) => {
 });
 
 self.addEventListener('push', (event) => {
-	if (!event.data) {
+	const eventData = event.data?.json();
+
+	if (!eventData) {
 		console.warning("Received a push event which has no data!");
 		return;
 	}
 
 	const promiseChain = self.registration.showNotification(
-		"🔔 Ping", {
-			body: event.data.text(),
-			silent: true,
+		eventData.title ?? "🔔 Ping",
+		{
+			body: eventData.message ?? undefined,
+			silent: eventData.silent ?? true,
 			icon: '/images/notification-icon.png',
 			badge: '/images/notification-badge.png',
 			actions: [

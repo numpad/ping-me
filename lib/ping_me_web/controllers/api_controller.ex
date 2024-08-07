@@ -8,7 +8,8 @@ defmodule PingMeWeb.ApiController do
     changeset = Subscriber.changeset(%Subscriber{}, %{ subscription_data: subscription_data })
     {:ok, _} = Repo.insert(changeset)
 
-    WebPushElixir.send_notification(
+    PingMe.NotificationSender.send_ping(
+      PingMe.NotificationSender,
       subscription_data,
       "You are subscribed! This is how you'll receive notifications.")
 

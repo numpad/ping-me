@@ -18,7 +18,8 @@ defmodule PingMeWeb.PageController do
 
       # TODO: sending fails for all(?) if Subscriber.subscription contains garbage...
       send_sub = fn sub ->
-        WebPushElixir.send_notification(sub.subscription_data, "#{params["message"]}")
+        PingMe.NotificationSender.send_ping(PingMe.NotificationSender,
+          sub.subscription_data, "#{params["message"]}")
       end
 
       Subscriber
