@@ -1,4 +1,4 @@
-defmodule PingMeWeb.Plugs.RateLimiterPlug do
+defmodule PingMeWeb.Plugs.ApiRateLimiter do
   import Plug.Conn
 
   alias PingMe.RateLimiter
