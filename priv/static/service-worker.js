@@ -1,10 +1,10 @@
 
 self.addEventListener('install', (event) => {
-	console.log('Service Worker installed');
+	//console.log('Service Worker installed');
 });
 
 self.addEventListener('activate', (event) => {
-	console.log('Service Worker activated');
+	//console.log('Service Worker activated');
 });
 
 self.addEventListener('fetch', (event) => {
@@ -12,7 +12,19 @@ self.addEventListener('fetch', (event) => {
 });
 
 self.addEventListener('notificationclick', (event) => {
+	event.notification.close();
 	
+	const promiseChain = fetch(
+		'/api/notification_action',
+		{
+			method: 'POST',
+			body: JSON.stringify(event),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		}
+	);
+	event.waitUntil(promiseChain);
 });
 
 self.addEventListener('push', (event) => {
@@ -30,10 +42,11 @@ self.addEventListener('push', (event) => {
 			silent: eventData.silent ?? true,
 			icon: '/images/notification-icon.png',
 			badge: '/images/notification-badge.png',
-			actions: [
+			actions: eventData.actions,
+			/*actions: [
 				/* {action: 'reply', title: "Reply", icon: undefined}, */
 				/* {action: 'mark-spam', title: "Mark spam", icon: undefined}, */
-			],
+			//],
 		}
 	);
 
